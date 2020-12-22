@@ -824,8 +824,8 @@ h3.subsection-title {
 }
 
 .tutorial-content .entry {
-    width: 680px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 680px;
     margin: 0 auto;
 }
 
