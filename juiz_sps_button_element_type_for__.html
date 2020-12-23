@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Action: jsps_before_update_option - Nobs • Share Button for WordPress — Documentation</title>
+        <title>Filter: juiz_sps_button_element_type_for_* - Nobs • Share Button for WordPress — Documentation</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -79,7 +79,7 @@
 
                 
 
-                <h1 class="page-title">Action: jsps_before_update_option</h1>
+                <h1 class="page-title">Filter: juiz_sps_button_element_type_for_*</h1>
 
                 
 
@@ -99,7 +99,7 @@
 
     
 
-    <pre class="name method-tmpl" id="jsps_before_update_option">do_action( '<span class="hook-name">jsps_before_update_option</span>', <span class="signature"><span class="sign-item">$options</span>, <span class="sign-item">$site</span> )<span class="type-signature"></span></span></pre>
+    <pre class="name method-tmpl" id="juiz_sps_button_element_type_for_*">apply_filters( '<span class="hook-name">juiz_sps_button_element_type_for_*</span>', <span class="signature"><span class="sign-item">$element</span> )<span class="type-signature"> &rarr; {string}</span></span></pre>
 
     
 
@@ -107,7 +107,8 @@
 
 <div class="description method-tmpl">
     
-    Add action before updating the options.
+    The type of HTML element you want to use for a specific network.
+It produces automatically a <code>a href</code> or a <code>button type="button"</code> if it detects of the <code>a</code> or <code>button</code> options.
 </div>
 
 
@@ -139,16 +140,16 @@
     <tbody>
     
 
-        <tr id="options">
+        <tr id="element">
             
-                <td class="param-name name"><code>$options</code></td>
+                <td class="param-name name"><code>$element</code></td>
             
 
             <td class="param-type type">
             
                 
 	
-	<span class="param-type">array</span>
+	<span class="param-type">string</span>
 	
 
 
@@ -161,41 +162,7 @@
 
             <td class="param-description last">
                 
-                The plugin options in one array.
-
-                </td>
-        </tr>
-
-    
-
-        <tr id="site">
-            
-                <td class="param-name name"><code>$site</code></td>
-            
-
-            <td class="param-type type">
-            
-                
-	
-	<span class="param-type">int</span>
-	
-|
-
-	
-	<span class="param-type">null</span>
-	
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="param-description last">
-                
-                The site ID in multisite context, or null
+                It's a link par default, so <code>a</code>
 
                 </td>
         </tr>
@@ -248,7 +215,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="options.php.html">options.php</a>, <a href="options.php.html#line59">line 59</a>
+        <a href="front_buttons.php.html">front/buttons.php</a>, <a href="front_buttons.php.html#line350">line 350</a>
     </li></ul></dd>
     
 
@@ -271,6 +238,30 @@
 
 
 
+<h2 id="returns" class="h2-like method-tmpl">Returns:</h2>
+
+        
+<div class="param-description return-desc returns-tmpl">
+    The string of HTML element you want.
+</div>
+
+
+
+<dl class="details details-return">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+	
+	<span class="param-type">string</span>
+	
+
+
+    </dd>
+</dl>
+
+    
 
 
 

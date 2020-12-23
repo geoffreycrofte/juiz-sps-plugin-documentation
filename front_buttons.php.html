@@ -344,6 +344,7 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 		// Classes and attributes options.
 		$juiz_sps_target_link = ( isset( $juiz_sps_options['juiz_sps_target_link'] ) &amp;&amp; $juiz_sps_options['juiz_sps_target_link'] == 1 ) ? ' target="_blank"' : '';
 		$juiz_sps_hidden_name_class = ( isset( $juiz_sps_options['juiz_sps_hide_social_name'] ) &amp;&amp; $juiz_sps_options['juiz_sps_hide_social_name'] == 1 ) ? ' juiz_sps_hide_name' : '';
+		$juiz_sps_compact_name_class = ( isset( $juiz_sps_options['juiz_sps_compact_display'] ) &amp;&amp; $juiz_sps_options['juiz_sps_compact_display'] == 1 ) ? ' juiz_sps_compact' : '';
 		$container_classes .= ( intval( $counters ) == 1 ) ? ' juiz_sps_counters' : '';
 		$container_classes .= ( isset( $juiz_sps_options['juiz_sps_counter_option'] ) ) ? ' counters_' . $juiz_sps_options['juiz_sps_counter_option'] : ' counters_both';
 
@@ -356,7 +357,7 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 		$juiz_sps_content .= "\n" . '&lt;' . $div . ' class="juiz_sps_links ' . esc_attr( $container_classes ) . ' juiz_sps_displayed_' . $juiz_sps_display_where . '" data-post-id="' . $post -> ID . '">';
 		$juiz_sps_content .= $hide_intro_phrase ? '' : "\n" . '&lt;' . $p . ' class="screen-reader-text juiz_sps_maybe_hidden_text">' . $share_the_post_sentence . ' "' . wp_strip_all_tags( get_the_title() ) . '"&lt;/' . $p . '>' . "\n";
 		$juiz_sps_content .= $before_the_list;
-		$juiz_sps_content .= "\n\t" . '&lt;' . $ul . ' class="juiz_sps_links_list' . esc_attr( $juiz_sps_hidden_name_class ) . '">';
+		$juiz_sps_content .= "\n\t" . '&lt;' . $ul . ' class="juiz_sps_links_list' . esc_attr( $juiz_sps_hidden_name_class ) . esc_attr( $juiz_sps_compact_name_class ) . '">';
 		$juiz_sps_content .= $before_first_i;
 
 
@@ -423,7 +424,6 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 		 	 * @return {string}  The string returned after the renaming.
 			 */
 			$nw_name  = apply_filters( 'juiz_sps_share_name_for_' . $k, $nw_name );
-			$more_att = $juiz_sps_target_link;
 
 			/**
 			 * The tooltip for a specific network. Default one is `Share this on %s`.
@@ -437,6 +437,21 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 			 */
 			$api_text = apply_filters( 'juiz_sps_share_text_for_' . $k, sprintf( __( 'Share this article on %s', 'juiz-social-post-sharer' ), $nw_name ) );
 
+			/**
+			 * The type of HTML element you want to use for a specific network.
+			 * It produces automatically a `a href` or a `button type="button"` if it detects of the `a` or `button` options.
+			 * 
+			 * @hook juiz_sps_button_element_type_for_*
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $element   It's a link par default, so `a`
+		 	 * @return {string}  The string of HTML element you want.
+			 */
+			$button = apply_filters( 'juiz_sps_button_element_type_for_' . $k, 'a' );
+
+			// Some conditional used variable for content adjustment.
+			// Most of them are empty and tweakable with filters later.
+			$more_link_attr = $more_item_attr = $code_before_end_li = $code_before_end_button = $code_between_icon_text = $code_before_icon = '';
 
 			switch ( $k ) {
 				case 'twitter' :
@@ -444,7 +459,7 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 					 * Edits the default Twitter nickname mentionned in the URL (via option) and override the option in the admin.&lt;br>
 					 * **The option have to not to be empty in the admin for the hook to work.**
 					 * 
-					 * @hook juiz_sps_twitter_user
+					 * @hook juiz_sps_twitter_nickname
 					 * 
 				 	 * @since  1.4.9 First version
 				 	 * @param  {string}  $text      The Twitter nickname set in the admin option.
@@ -465,7 +480,6 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 					}
 					else {
 						$api_link = "javascript:void((function(){var%20e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','//assets.pinterest.com/js/pinmarklet.js?r='+Math.random()*99999999);document.body.appendChild(e)})());";
-						$more_att = '';
 					}
 					$api_text = apply_filters( 'juiz_sps_share_text_for_' . $k, __( 'Share an image of this article on Pinterest', 'juiz-social-post-sharer' ) );
 					break;
@@ -530,13 +544,51 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 				case 'bookmark' :
 					$api_link = $url;
 					$api_text = apply_filters( 'juiz_sps_share_text_for_' . $k, __( 'Bookmark this article (on your browser)', 'juiz-social-post-sharer') );
-					$more_att = ' data-alert="' . esc_attr( __( 'Press %s to bookmark this page.', 'juiz-social-post-sharer' ) ) . '"';
+					$more_link_attr = 'data-alert="' . esc_attr( __( 'Press %s to bookmark this page.', 'juiz-social-post-sharer' ) ) . '"';
 					break;
 
 				case 'print' :
 					$api_link = '#';
 					$api_text = apply_filters( 'juiz_sps_share_text_for_' . $k, __( 'Print this page', 'juiz-social-post-sharer') );
-					$more_att = '';
+					break;
+
+				case 'shareapi' :
+					$api_link = '#';
+					$button = 'button';
+					$api_text = apply_filters( 'juiz_sps_share_text_for_' . $k, __( 'Share on your favorite apps', 'juiz-social-post-sharer') );
+					//$more_item_attr = 'style="display:none;"';
+					
+					$code_before_end_li = '&lt;script>
+					window.addEventListener("DOMContentLoaded", function(){
+						if ( navigator.share ) {
+							let shareurl = document.location.href;
+							let btns = document.querySelectorAll(".juiz_sps_link_shareapi button:not([data-bound])");
+							const canon = document.querySelector("link[rel=canonical]");
+
+							if (canon !== null) {
+								shareurl = canon.href;
+							}
+
+							btns.forEach(function(el) {
+								el.closest(".juiz_sps_link_shareapi").removeAttribute( "style" );
+								el.setAttribute( "data-bound", "true" );
+								el.addEventListener("click", async () => {
+									try {
+										await navigator.share({
+											title: "' . esc_attr( $post->post_title ) . '",
+											text: "' . esc_attr( $post->post_title ) . ' - ' . esc_attr( jsps_get_excerpt( $post ) ) . '",
+											url: shareurl,
+										});
+										console.info("Successful share");
+									} catch(err) {
+										console.warn("Error sharing", error);
+									}
+								});
+							});
+						}
+					});
+					&lt;/script>';
+
 					break;
 
 				default:
@@ -560,7 +612,7 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 			 * 
 		 	 * @since  2.0.0 First version
 		 	 * @param  {string}  $params=''   Empty by default.
-		 	 * @return {string}  The new parameters you added. To forget to start with a `&amp;amp;amp;`
+		 	 * @return {string}  The new parameters you added. Don't forget to start with a `&amp;amp;amp;`
 			 */
 			/**
 			 * Edits the specific API URL at the end. You can use it to add parameters like UTM.
@@ -569,11 +621,116 @@ if ( ! function_exists( 'get_juiz_sps' ) ) {
 			 * 
 		 	 * @since  2.0.0 First version
 		 	 * @param  {string}  $params=''   Empty by default.
-		 	 * @return {string}  The new parameters you added. To forget to start with a `&amp;amp;amp;`
+		 	 * @return {string}  The new parameters you added. Don't forget to start with a `&amp;amp;amp;`
 			 */
 			$api_link = $api_link . apply_filters( 'juiz_sps_' . $k . '_url_params', apply_filters( 'juiz_sps_url_params', '' ) );
 
-			$item_content = '&lt;' . $li . ' class="juiz_sps_item juiz_sps_link_' . esc_attr( $k ) . '"' . ( isset( $v['color'] ) ? ' style="--jsps-custom-color:' . esc_attr( $v['color'] ) . ';' . ( isset( $v['hcolor'] ) ? '--jsps-custom-hover-color:' . esc_attr( $v['hcolor'] ) . ';' : '' ) . '"' : '' ) . '>&lt;a href="' . wp_strip_all_tags( esc_attr( $api_link ) ) . '" ' . $rel_nofollow . '' . $more_att . ' title="' . esc_attr( $api_text ) . '">&lt;span class="juiz_sps_icon jsps-' . esc_attr( $k ) . '">' . jsps_get_network_html_icon( $k, $v, true ) . '&lt;/span>&lt;span class="juiz_sps_network_name">' . esc_html( $nw_name ) . '&lt;/span>&lt;/a>&lt;/' . $li . '>';
+			/**
+			 * Edits the item (LI by default) HTML attributes before printing it.
+			 * &lt;br> To edit a specific item attributes, see {@link juiz_sps_*_item_attr}
+			 * 
+			 * @hook juiz_sps_items_attr
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $attrs=''   Empty most of the time, but not for Share API.
+		 	 * @return {string}  The new attributes you added.
+			 */
+			/**
+			 * Edits the item (LI by default) HTML attributes before printing it for a precise network/button.
+			 * 
+			 * @hook juiz_sps_*_item_attr
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $attrs=''   Empty most of the time, but not for Share API.
+		 	 * @return {string}  The new attributes you added.
+			 */
+			$more_item_attr = apply_filters( 'juiz_sps_' . $k . '_item_attr', apply_filters( 'juiz_sps_items_attr', $more_item_attr ) );
+
+			/**
+			 * Edits the link (A by default) HTML attributes before printing it.
+			 * &lt;br> To edit a specific link attributes, see {@link juiz_sps_*_link_attr}
+			 * 
+			 * @hook juiz_sps_links_attr
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $attrs=''   Empty most of the time, but not Bookmark button.
+		 	 * @return {string}  The new attributes you added.
+			 */
+			/**
+			 * Edits the link (A by default) HTML attributes before printing it for a precise network/button.
+			 * 
+			 * @hook juiz_sps_*_link_attr
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $attrs=''   Empty most of the time, but not Bookmark button.
+		 	 * @return {string}  The new attributes you added.
+			 */
+			$more_link_attr = apply_filters( 'juiz_sps_' . $k . '_link_attr', apply_filters( 'juiz_sps_links_attr', $more_link_attr ) );
+
+			$item_content = '&lt;' . $li . '' . ( isset( $more_item_attr ) &amp;&amp; ! empty( $more_item_attr ) ? ' ' . $more_item_attr : '' ) . ' class="juiz_sps_item juiz_sps_link_' . esc_attr( $k ) . '"' . ( isset( $v['color'] ) ? ' style="--jsps-custom-color:' . esc_attr( $v['color'] ) . ';' . ( isset( $v['hcolor'] ) ? '--jsps-custom-hover-color:' . esc_attr( $v['hcolor'] ) . ';' : '' ) . '"' : '' ) . '>';
+
+			$btn_el = '';
+			if ( $button === 'a' ) {
+				$btn_el = 'a href="' . wp_strip_all_tags( esc_attr( $api_link ) ) . '" ' . $rel_nofollow . ' ' . $juiz_sps_target_link;
+			} elseif ( $button === 'button' ) {
+				$btn_el = 'button type="button" data-api-link="' . wp_strip_all_tags( esc_attr( $api_link ) ) . '"';
+			} else {
+				$btn_el = $button;
+			}
+
+			$item_content .= '&lt;' . $btn_el . ' ' . ( isset( $more_link_attr ) &amp;&amp; ! empty( $more_link_attr ) ? ' ' . $more_link_attr : '' )  . ' title="' . esc_attr( $api_text ) . '" class="juiz_sps_button">';
+
+			/**
+			 * Adds code content before the .juiz_sps_icon element.
+			 * 
+			 * @hook juiz_sps_code_before_icon
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $code=''   Empty by default.
+		 	 * @return {string}  Your own code.
+			 */
+			$item_content .= apply_filters( 'juiz_sps_code_before_icon', $code_before_icon );
+
+			$item_content .= '&lt;span class="juiz_sps_icon jsps-' . esc_attr( $k ) . '">' . jsps_get_network_html_icon( $k, $v, true ) . '&lt;/span>';
+
+			/**
+			 * Adds code content between the .juiz_sps_icon and .juiz_sps_network_name elements.
+			 * 
+			 * @hook juiz_sps_code_between_icon_text
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $code=''   Empty by default.
+		 	 * @return {string}  Your own code.
+			 */
+			$item_content .= apply_filters( 'juiz_sps_code_between_icon_text', $code_between_icon_text );
+
+			$item_content .= '&lt;span class="juiz_sps_network_name">' . esc_html( $nw_name ) . '&lt;/span>';
+
+			/**
+			 * Adds code content before the end of the link or button element .juiz_sps_button
+			 * 
+			 * @hook juiz_sps_code_before_end_button
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $code=''   Empty by default.
+		 	 * @return {string}  Your own code.
+			 */
+			$item_content .= apply_filters( 'juiz_sps_code_before_end_button', $code_before_end_button );
+
+			$item_content .= '&lt;/' . $button . '>';
+
+			/**
+			 * Adds code content before the end of the item .juiz_sps_item
+			 * 
+			 * @hook juiz_sps_code_before_end_li
+			 * 
+		 	 * @since  2.0.0 First version
+		 	 * @param  {string}  $code=''   Empty by default, except for ShareAPI button.
+		 	 * @return {string}  Your own code.
+			 */
+			$item_content .= apply_filters( 'juiz_sps_code_before_end_li', $code_before_end_li );
+
+			$item_content .= '&lt;/' . $li . '>';
 
 			/**
 			 * Edits the HTML code for every item including the LI and A elements.
@@ -776,6 +933,8 @@ if ( ! function_exists( 'juiz_sps_print_links' ) ) {
 								<li class="here-2-jsps_register_custom_skin"><a href="jsps_register_custom_skin.html">jsps_register_custom_skin</a></li>
 								<li class="here-2-jsps_render_api_link"><a href="jsps_render_api_link.html">jsps_render_api_link</a></li>
 								<li class="here-2-jsps_show_modal_footer"><a href="jsps_show_modal_footer.html">jsps_show_modal_footer</a></li>
+								<li class="here-2-juiz_sps_*_item_attr"><a href="juiz_sps___item_attr.html">juiz_sps_*_item_attr</a></li>
+								<li class="here-2-juiz_sps_*_link_attr"><a href="juiz_sps___link_attr.html">juiz_sps_*_link_attr</a></li>
 								<li class="here-2-juiz_sps_*_url_params"><a href="juiz_sps___url_params.html">juiz_sps_*_url_params</a></li>
 								<li class="here-2-juiz_sps_after_*_network_item"><a href="juiz_sps_after___network_item.html">juiz_sps_after_*_network_item</a></li>
 								<li class="here-2-juiz_sps_after_each_network_item"><a href="juiz_sps_after_each_network_item.html">juiz_sps_after_each_network_item</a></li>
@@ -785,7 +944,12 @@ if ( ! function_exists( 'juiz_sps_print_links' ) ) {
 								<li class="here-2-juiz_sps_before_first_item"><a href="juiz_sps_before_first_item.html">juiz_sps_before_first_item</a></li>
 								<li class="here-2-juiz_sps_before_the_list"><a href="juiz_sps_before_the_list.html">juiz_sps_before_the_list</a></li>
 								<li class="here-2-juiz_sps_before_the_sps"><a href="juiz_sps_before_the_sps.html">juiz_sps_before_the_sps</a></li>
+								<li class="here-2-juiz_sps_button_element_type_for_*"><a href="juiz_sps_button_element_type_for__.html">juiz_sps_button_element_type_for_*</a></li>
 								<li class="here-2-juiz_sps_buttons_in_excerpt"><a href="juiz_sps_buttons_in_excerpt.html">juiz_sps_buttons_in_excerpt</a></li>
+								<li class="here-2-juiz_sps_code_before_end_button"><a href="juiz_sps_code_before_end_button.html">juiz_sps_code_before_end_button</a></li>
+								<li class="here-2-juiz_sps_code_before_end_li"><a href="juiz_sps_code_before_end_li.html">juiz_sps_code_before_end_li</a></li>
+								<li class="here-2-juiz_sps_code_before_icon"><a href="juiz_sps_code_before_icon.html">juiz_sps_code_before_icon</a></li>
+								<li class="here-2-juiz_sps_code_between_icon_text"><a href="juiz_sps_code_between_icon_text.html">juiz_sps_code_between_icon_text</a></li>
 								<li class="here-2-juiz_sps_container_classes"><a href="juiz_sps_container_classes.html">juiz_sps_container_classes</a></li>
 								<li class="here-2-juiz_sps_container_tag"><a href="juiz_sps_container_tag.html">juiz_sps_container_tag</a></li>
 								<li class="here-2-juiz_sps_content"><a href="juiz_sps_content.html">juiz_sps_content</a></li>
@@ -795,6 +959,8 @@ if ( ! function_exists( 'juiz_sps_print_links' ) ) {
 								<li class="here-2-juiz_sps_custom_skin_name"><a href="juiz_sps_custom_skin_name.html">juiz_sps_custom_skin_name</a></li>
 								<li class="here-2-juiz_sps_hide_intro"><a href="juiz_sps_hide_intro.html">juiz_sps_hide_intro</a></li>
 								<li class="here-2-juiz_sps_intro_phrase_text"><a href="juiz_sps_intro_phrase_text.html">juiz_sps_intro_phrase_text</a></li>
+								<li class="here-2-juiz_sps_items_attr"><a href="juiz_sps_items_attr.html">juiz_sps_items_attr</a></li>
+								<li class="here-2-juiz_sps_links_attr"><a href="juiz_sps_links_attr.html">juiz_sps_links_attr</a></li>
 								<li class="here-2-juiz_sps_links_nofollow"><a href="juiz_sps_links_nofollow.html">juiz_sps_links_nofollow</a></li>
 								<li class="here-2-juiz_sps_list_container_tag"><a href="juiz_sps_list_container_tag.html">juiz_sps_list_container_tag</a></li>
 								<li class="here-2-juiz_sps_list_of_item_tag"><a href="juiz_sps_list_of_item_tag.html">juiz_sps_list_of_item_tag</a></li>
@@ -806,7 +972,7 @@ if ( ! function_exists( 'juiz_sps_print_links' ) ) {
 								<li class="here-2-juiz_sps_the_shared_permalink"><a href="juiz_sps_the_shared_permalink.html">juiz_sps_the_shared_permalink</a></li>
 								<li class="here-2-juiz_sps_the_shared_permalink_for_*"><a href="juiz_sps_the_shared_permalink_for__.html">juiz_sps_the_shared_permalink_for_*</a></li>
 								<li class="here-2-juiz_sps_total_count_word"><a href="juiz_sps_total_count_word.html">juiz_sps_total_count_word</a></li>
-								<li class="here-2-juiz_sps_twitter_user"><a href="juiz_sps_twitter_user.html">juiz_sps_twitter_user</a></li>
+								<li class="here-2-juiz_sps_twitter_nickname"><a href="juiz_sps_twitter_nickname.html">juiz_sps_twitter_nickname</a></li>
 								<li class="here-2-juiz_sps_url_params"><a href="juiz_sps_url_params.html">juiz_sps_url_params</a></li>
 								<li class="here-2-juiz_sps_use_default_css"><a href="juiz_sps_use_default_css.html">juiz_sps_use_default_css</a></li>
 						</ul>
