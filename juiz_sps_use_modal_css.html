@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Filter: juiz_sps_intro_phrase_text - Nobs • Share Buttons for WordPress — Documentation</title>
+        <title>Filter: juiz_sps_use_modal_css - Nobs • Share Buttons for WordPress — Documentation</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -75,7 +75,7 @@
         <div class="app">
             
             <section role="main" id="main" class="doc-page">
-                <h1 class="page-title">Filter: juiz_sps_intro_phrase_text</h1>
+                <h1 class="page-title">Filter: juiz_sps_use_modal_css</h1>
             
 
                 
@@ -94,7 +94,7 @@
 
     
 
-    <pre class="name method-tmpl" id="juiz_sps_intro_phrase_text">apply_filters( '<span class="hook-name">juiz_sps_intro_phrase_text</span>', <span class="signature"><span class="sign-item">$text</span> )<span class="type-signature"> &rarr; {string}</span></span></pre>
+    <pre class="name method-tmpl" id="juiz_sps_use_modal_css">apply_filters( '<span class="hook-name">juiz_sps_use_modal_css</span>', <span class="signature"><span class="sign-item">$is_used</span> )<span class="type-signature"> &rarr; {boolean}</span></span></pre>
 
     
 
@@ -102,7 +102,7 @@
 
 <div class="description method-tmpl">
     
-    Prints the text "Share the post" in introduction before the buttons if <code>juiz_sps_hide_intro</code>returns true.
+    Adds to the <code>wp_enqueue_style()</code> the JSPS Modal CSS.
 </div>
 
 
@@ -136,16 +136,16 @@
     <tbody>
     
 
-        <tr id="text">
+        <tr id="is_used">
             
-                <td class="param-name name"><code>$text</code></td>
+                <td class="param-name name"><code>$is_used</code></td>
             
 
             <td class="param-type type">
             
                 
 	
-	<span class="param-type">string</span>
+	<span class="param-type">boolean</span>
 	
 
 
@@ -157,14 +157,14 @@
             
                 <td class="param-default default">
                 
-                    "Share·the·post"
+                    true
                 
                 </td>
             
 
             <td class="param-description last">
                 
-                The Text printed before the buttons.
+                <code>true</code> to use the CSS, <code>false</code> remove it.
 
                 </td>
         </tr>
@@ -184,7 +184,7 @@
 
     
     <dt class="tag-since">Since:</dt>
-    <dd class="tag-since"><ul class="dummy"><li>1.0.0 First version</li></ul></dd>
+    <dd class="tag-since"><ul class="dummy"><li>2.0.0</li></ul></dd>
     
 
     
@@ -217,7 +217,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="front_buttons.php.html">front/buttons.php</a>, <a href="front_buttons.php.html#line100">line 100</a>
+        <a href="front_enqueues.php.html">front/enqueues.php</a>, <a href="front_enqueues.php.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -244,7 +244,7 @@
 
         
 <div class="param-description return-desc returns-tmpl">
-    The Text printed before the buttons.
+    <code>true</code> to use the CSS, <code>false</code> to remove it, and use CSS in your own way.
 </div>
 
 
@@ -256,7 +256,7 @@
     <dd>
         
 	
-	<span class="param-type">string</span>
+	<span class="param-type">boolean</span>
 	
 
 

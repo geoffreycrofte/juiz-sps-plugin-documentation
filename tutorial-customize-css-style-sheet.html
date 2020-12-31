@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Customize CSS StyleSheet - Nobs • Share Button for WordPress — Documentation</title>
+        <title>Customize CSS StyleSheet - Nobs • Share Buttons for WordPress — Documentation</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -75,13 +75,8 @@
         <div class="app">
             
             <section role="main" id="main" class="doc-page">
-            
-
-                
-
                 <h1 class="page-title">Customize CSS StyleSheet</h1>
-
-                
+            
 
                 <article class="tutorial-content">
 
@@ -267,9 +262,6 @@
 
 	--whatsapp: #128C7E;
 	--whatsappdark: #075E54;
-
-	--shareapi: #5250B1;
-	--shareapidark: #3C3B69;
 }
 
 @font-face {
@@ -328,8 +320,7 @@
 .jsps-reddit::before {
 	content: "\e90a";
 }
-.jsps-share::before,
-.jsps-shareapi::before {
+.jsps-share::before {
 	content: "\e90b";
 }
 .jsps-tumblr::before {
@@ -381,7 +372,7 @@
 }
 
 /* Link / Button */
-.juiz_sps_links .juiz_sps_item .juiz_sps_button {
+.juiz_sps_links .juiz_sps_item a {
 }
 
 /* The network name */
@@ -398,84 +389,66 @@
 }
 
 /* The link when hovered/focused */
-.juiz_sps_links .juiz_sps_item .juiz_sps_button:hover,
-.juiz_sps_links .juiz_sps_item .juiz_sps_button:focus {
+.juiz_sps_links .juiz_sps_item a:hover,
+.juiz_sps_links .juiz_sps_item a:focus {
 }
 
 /* The link when active/clicked/touched */
-.juiz_sps_links .juiz_sps_item .juiz_sps_button:active {
+.juiz_sps_links .juiz_sps_item a:active {
 }
 
 /**
  * Color Application
  */
-.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button {
+.juiz_sps_links .juiz_sps_link_twitter a {
 	background-color: var(--twitter);
 }
 
-.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button:hover,
-.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button:focus { 
+.juiz_sps_links .juiz_sps_link_twitter a:hover,
+.juiz_sps_links .juiz_sps_link_twitter a:focus { 
 	background-color: var(--twitterdark);
 }
 
 /* ... and so on... */
 
-/**
- * Specific: When names are hidden via the options
- */
-.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button {
+/* Specific: When names are hidden via the options */
+.juiz_sps_hide_name .juiz_sps_item a {
 	padding: 8px; /* override --link-padding */
 }
 
-.juiz_sps_hide_name .juiz_sps_button .juiz_sps_network_name {
+.juiz_sps_hide_name a .juiz_sps_network_name {
 	max-width: 0;
 	white-space: nowrap!important;
 	overflow: hidden;
 }
 
-.juiz_sps_hide_name .juiz_sps_button .juiz_sps_network_name { 
+.juiz_sps_hide_name a .juiz_sps_network_name { 
 	-webkit-transition: max-width .75s;
 			transition: max-width .75s;
 }
 
-.juiz_sps_hide_name .juiz_sps_button .juiz_sps_icon {
+.juiz_sps_hide_name a .juiz_sps_icon {
 	margin-right:0;
 	-webkit-transition: margin .75s;
 			transition: margin .75s;
 }
 
-.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button:hover,
-.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button:focus {
+.juiz_sps_hide_name .juiz_sps_item a:hover,
+.juiz_sps_hide_name .juiz_sps_item a:focus {
 	padding: var(--link-padding);
 }
 
-.juiz_sps_hide_name .juiz_sps_button:hover .juiz_sps_network_name,
-.juiz_sps_hide_name .juiz_sps_button:focus .juiz_sps_network_name {
+.juiz_sps_hide_name a:hover .juiz_sps_network_name,
+.juiz_sps_hide_name a:focus .juiz_sps_network_name {
 	max-width: 8em;
 }
 
-.juiz_sps_hide_name .juiz_sps_button:hover .juiz_sps_icon,
-.juiz_sps_hide_name .juiz_sps_button:focus .juiz_sps_icon {
+.juiz_sps_hide_name a:hover .juiz_sps_icon,
+.juiz_sps_hide_name a:focus .juiz_sps_icon {
 	margin-right: .3em;
 }
 
-/**
- * Specific: When Compact Mode is ON
- */
-.juiz_sps_links .juiz_sps_compact .juiz_sps_button {
-	/* Do something */
-}
-
-/**
- * Specific: When Compact Mode and Hidden Name are ON
- */
-.juiz_sps_links .juiz_sps_compact.juiz_sps_hide_name .juiz_sps_button {
-	/* Do something */
-}
-
-/**
- * Specific: When the counters are activated via the options
- */
+/* Specific: When the counters are activated via the options */
 .juiz_sps_counter {
 }
 
@@ -579,6 +552,8 @@
 								<li class="here-2-juiz_sps_twitter_nickname"><a href="juiz_sps_twitter_nickname.html">juiz_sps_twitter_nickname</a></li>
 								<li class="here-2-juiz_sps_url_params"><a href="juiz_sps_url_params.html">juiz_sps_url_params</a></li>
 								<li class="here-2-juiz_sps_use_default_css"><a href="juiz_sps_use_default_css.html">juiz_sps_use_default_css</a></li>
+								<li class="here-2-juiz_sps_use_main_js"><a href="juiz_sps_use_main_js.html">juiz_sps_use_main_js</a></li>
+								<li class="here-2-juiz_sps_use_modal_css"><a href="juiz_sps_use_modal_css.html">juiz_sps_use_modal_css</a></li>
 						</ul>
 					</li>
 					<li class="nav-item-actions">

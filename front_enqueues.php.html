@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Source: front/enqueues.php - Nobs • Share Button for WordPress — Documentation</title>
+        <title>Source: front/enqueues.php - Nobs • Share Buttons for WordPress — Documentation</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -75,13 +75,8 @@
         <div class="app">
             
             <section role="main" id="main" class="doc-page">
-            
-
-                
-
                 <h1 class="page-title">Source: front/enqueues.php</h1>
-
-                
+            
 
                 
 
@@ -110,7 +105,7 @@ if ( ! function_exists('jsps_enqueue_scripts') ) {
 		wp_enqueue_script(
 			'juiz_sps_scripts',
 			JUIZ_SPS_PLUGIN_ASSETS . 'js/' . JUIZ_SPS_SLUG . $prefix . '.js',
-			array( 'jquery' ), // TODO: remove dependency. (rewrite JS)
+			array(),
 			JUIZ_SPS_VERSION,
 			true
 		);
@@ -140,7 +135,7 @@ if ( ! function_exists('jsps_enqueue_scripts') ) {
 		 	 * @param  {boolean}  $is_shown=true `true` to display it, `false` to hide it.
 		 	 * @return {boolean} `true` to display it, `false` to hide it, your choice 😊
 			 */
-			'modalEmailFooter'		=> apply_filters( 'jsps_show_modal_footer', true) ? sprintf( __( 'Free service by %sSocial Post Sharer%s', 'juiz-social-post-sharer' ), '&lt;a href="https://wordpress.org/plugins/juiz-social-post-sharer/" target="_blank">', '&lt;/a>' ) : '',
+			'modalEmailFooter'		=> apply_filters( 'jsps_show_modal_footer', true) ? sprintf( __( 'Free service by %sNobs • Share Buttons%s', 'juiz-social-post-sharer' ), '&lt;a href="https://wordpress.org/plugins/juiz-social-post-sharer/" target="_blank">', '&lt;/a>' ) : '',
 			'modalClose'			=> esc_html__( 'Close', 'juiz-social-post-sharer' ),
 			'modalErrorGeneric'		=> esc_html__( 'Sorry. It looks like we\'ve got an error on our side.', 'juiz-social-post-sharer' )
 		) );
@@ -188,34 +183,94 @@ if ( ! function_exists( 'juiz_sps_style_and_script' ) ) {
 
 				// The CSS file for theme.
 				wp_enqueue_style( 'juiz_sps_styles', $css_file, false, JUIZ_SPS_VERSION, 'all' );
-
-				// The CSS file for modal.
-				wp_enqueue_style( 'juiz_sps_modal_styles', JUIZ_SPS_PLUGIN_ASSETS . 'css/' . JUIZ_SPS_SLUG . '-modal' . $prefix . '.css', false, JUIZ_SPS_VERSION, 'all' );
 			}
 
-			// JS To Add to queue.
 			if (
-				( is_numeric ( $juiz_sps_options['juiz_sps_counter'] ) &amp;&amp; $juiz_sps_options['juiz_sps_counter'] == 1 )
-				||
-				( isset( $juiz_sps_options['juiz_sps_networks']['print'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['print'][0] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['print'][0] === 1 )
-				||
-				( isset( $juiz_sps_options['juiz_sps_networks']['bookmark'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['bookmark'][0] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['bookmark'][0] === 1 )
-				||
-				( isset( $juiz_sps_options['juiz_sps_networks']['mail'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['mail'][0] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['mail'][0] === 1 )
-
-				// version 2.0.0 new format
-				||
-				( isset( $juiz_sps_options['juiz_sps_networks']['print'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['print']['visible'] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['print']['visible'] === 1 )
-				||
-				( isset( $juiz_sps_options['juiz_sps_networks']['bookmark'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['bookmark']['visible'] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['bookmark']['visible'] === 1 )
+				( isset( $juiz_sps_options['juiz_sps_networks']['mail'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['mail'][0] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['mail'][0] === 1 ) 
 				||
 				( isset( $juiz_sps_options['juiz_sps_networks']['mail'] ) &amp;&amp; isset( $juiz_sps_options['juiz_sps_networks']['mail']['visible'] ) &amp;&amp; $juiz_sps_options['juiz_sps_networks']['mail']['visible'] === 1 )
 			) {
+				/**
+				 * Adds to the `wp_enqueue_style()` the JSPS Modal CSS. 
+				 * 
+				 * @hook juiz_sps_use_modal_css
+				 * 
+			 	 * @since  2.0.0
+			 	 * @param  {boolean}  $is_used=true `true` to use the CSS, `false` remove it.
+			 	 * @return {boolean} `true` to use the CSS, `false` to remove it, and use CSS in your own way.
+				 */
+				if ( apply_filters( 'juiz_sps_use_modal_css', true ) ) {
+					wp_enqueue_style( 'juiz_sps_modal_styles', JUIZ_SPS_PLUGIN_ASSETS . 'css/' . JUIZ_SPS_SLUG . '-modal' . $prefix . '.css', false, JUIZ_SPS_VERSION, 'all' );
+				}
+
+			}
+
+			// JS To Add to queue.
+			/**
+			 * Adds to the `wp_enqueue_script()` the Nobs JS file
+			 * Be careful, removing this file will block counters, and counting. You won't be able to retrieve past sharings later. 
+			 * 
+			 * @hook juiz_sps_use_main_js
+			 * 
+		 	 * @since  2.0.0
+		 	 * @param  {boolean}  $is_used=true `true` to use the JS file, `false` remove it.
+		 	 * @return {boolean} `true` to use the JS, `false` to remove it.
+			 */
+			if ( apply_filters( 'juiz_sps_use_main_js', true ) ) {
 				jsps_enqueue_scripts();
 			}
 		}
 	}
 	add_action( 'wp_enqueue_scripts', 'juiz_sps_style_and_script');
+}
+
+if ( ! function_exists( 'juiz_sps_defer_non_critical_css' ) ) {
+	/**
+	 * Changes the LINK HTML tags to make it load async (deferred)
+	 *
+	 * @param  string $tag    The complete HTML LINK element.
+	 * @param  string $handle The unique ID of the CSS.
+	 * @param  string $href   The URL of the CSS.
+	 * @param  string $media  The original media attribute value.
+	 * @return string         The new LINK + NOSCRIPT TAG.
+	 */
+	function juiz_sps_defer_non_critical_css( $tag, $handle, $href, $media ) {
+		if ( $handle === 'juiz_sps_modal_styles' ) {
+			// Replace media value by media print and onload attributes.
+			$tag = str_replace( 'media=\''. $media .'\'', 'media="print" onload="this.onload=null;this.media=\'all\'"', $tag );
+
+			// Adds a noscript tags for fallback.
+			$tag = str_replace( '>', '>&lt;noscript>&lt;link rel="stylesheet" media="' . $media . '" href="' . $href . '">&lt;/noscript>', $tag );
+		}
+		return $tag;
+	}
+	add_filter( 'style_loader_tag', 'juiz_sps_defer_non_critical_css', 10, 4);
+}
+
+if ( ! function_exists( 'juiz_sps_asycn_javascript' ) ) {
+	/**
+	 * Adds (Async too buggy) Defer Attributes to load scripts later and optimize performance.
+	 *
+	 * @param  string $tag    The complete HTML Script element.
+	 * @param  string $handle The unique ID of the script.
+	 * @param  string $src    The URL of the script.
+	 * 
+	 * @return string         The modified HTML Script.
+	 * @author Geoffrey Crofte
+	 * @since  2.0.0
+	 */
+	function juiz_sps_asycn_javascript($tag, $handle, $src) {
+		if ( $handle === 'juiz_sps_scripts' ) {
+			/*if ( false === stripos( $tag, 'async' ) ) {
+				$tag = str_replace(' src', ' async="async" src', $tag);
+			}*/
+			if ( false === stripos( $tag, 'defer' ) ) {	
+				$tag = str_replace('&lt;script ', '&lt;script defer ', $tag);
+			}
+		}
+		return $tag;
+	}
+	add_filter('script_loader_tag', 'juiz_sps_asycn_javascript', 10, 3);
 }
 </code></pre>
     </section>
@@ -297,6 +352,8 @@ if ( ! function_exists( 'juiz_sps_style_and_script' ) ) {
 								<li class="here-2-juiz_sps_twitter_nickname"><a href="juiz_sps_twitter_nickname.html">juiz_sps_twitter_nickname</a></li>
 								<li class="here-2-juiz_sps_url_params"><a href="juiz_sps_url_params.html">juiz_sps_url_params</a></li>
 								<li class="here-2-juiz_sps_use_default_css"><a href="juiz_sps_use_default_css.html">juiz_sps_use_default_css</a></li>
+								<li class="here-2-juiz_sps_use_main_js"><a href="juiz_sps_use_main_js.html">juiz_sps_use_main_js</a></li>
+								<li class="here-2-juiz_sps_use_modal_css"><a href="juiz_sps_use_modal_css.html">juiz_sps_use_modal_css</a></li>
 						</ul>
 					</li>
 					<li class="nav-item-actions">
