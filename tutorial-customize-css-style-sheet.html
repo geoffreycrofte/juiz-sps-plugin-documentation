@@ -43,6 +43,8 @@
         <meta name="twitter:description" content="Here is the complete documentation for the best Social Sharing Buttons for WordPress made free.">
         <meta name="twitter:image" content="https://sharebuttons.social/assets/img/og-twitter-card.png">
 
+        <meta name="flattr:id" content="nx05xn">
+
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -262,6 +264,9 @@
 
 	--whatsapp: #128C7E;
 	--whatsappdark: #075E54;
+
+	--shareapi: #5250B1;
+	--shareapidark: #3C3B69;
 }
 
 @font-face {
@@ -320,7 +325,8 @@
 .jsps-reddit::before {
 	content: "\e90a";
 }
-.jsps-share::before {
+.jsps-share::before,
+.jsps-shareapi::before {
 	content: "\e90b";
 }
 .jsps-tumblr::before {
@@ -372,7 +378,7 @@
 }
 
 /* Link / Button */
-.juiz_sps_links .juiz_sps_item a {
+.juiz_sps_links .juiz_sps_item .juiz_sps_button {
 }
 
 /* The network name */
@@ -389,66 +395,85 @@
 }
 
 /* The link when hovered/focused */
-.juiz_sps_links .juiz_sps_item a:hover,
-.juiz_sps_links .juiz_sps_item a:focus {
+.juiz_sps_links .juiz_sps_item .juiz_sps_button:hover,
+.juiz_sps_links .juiz_sps_item .juiz_sps_button:focus {
 }
 
 /* The link when active/clicked/touched */
-.juiz_sps_links .juiz_sps_item a:active {
+.juiz_sps_links .juiz_sps_item .juiz_sps_button:active {
 }
 
 /**
  * Color Application
  */
-.juiz_sps_links .juiz_sps_link_twitter a {
+.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button {
 	background-color: var(--twitter);
 }
 
-.juiz_sps_links .juiz_sps_link_twitter a:hover,
-.juiz_sps_links .juiz_sps_link_twitter a:focus { 
+.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button:hover,
+.juiz_sps_links .juiz_sps_link_twitter .juiz_sps_button:focus { 
 	background-color: var(--twitterdark);
 }
 
 /* ... and so on... */
 
-/* Specific: When names are hidden via the options */
-.juiz_sps_hide_name .juiz_sps_item a {
+/**
+ * Specific: When names are hidden via the options
+ */
+
+.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button {
 	padding: 8px; /* override --link-padding */
 }
 
-.juiz_sps_hide_name a .juiz_sps_network_name {
+.juiz_sps_hide_name .juiz_sps_button .juiz_sps_network_name {
 	max-width: 0;
 	white-space: nowrap!important;
 	overflow: hidden;
 }
 
-.juiz_sps_hide_name a .juiz_sps_network_name { 
+.juiz_sps_hide_name .juiz_sps_button .juiz_sps_network_name { 
 	-webkit-transition: max-width .75s;
 			transition: max-width .75s;
 }
 
-.juiz_sps_hide_name a .juiz_sps_icon {
+.juiz_sps_hide_name .juiz_sps_button .juiz_sps_icon {
 	margin-right:0;
 	-webkit-transition: margin .75s;
 			transition: margin .75s;
 }
 
-.juiz_sps_hide_name .juiz_sps_item a:hover,
-.juiz_sps_hide_name .juiz_sps_item a:focus {
+.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button:hover,
+.juiz_sps_hide_name .juiz_sps_item .juiz_sps_button:focus {
 	padding: var(--link-padding);
 }
 
-.juiz_sps_hide_name a:hover .juiz_sps_network_name,
-.juiz_sps_hide_name a:focus .juiz_sps_network_name {
+.juiz_sps_hide_name .juiz_sps_button:hover .juiz_sps_network_name,
+.juiz_sps_hide_name .juiz_sps_button:focus .juiz_sps_network_name {
 	max-width: 8em;
 }
 
-.juiz_sps_hide_name a:hover .juiz_sps_icon,
-.juiz_sps_hide_name a:focus .juiz_sps_icon {
+.juiz_sps_hide_name .juiz_sps_button:hover .juiz_sps_icon,
+.juiz_sps_hide_name .juiz_sps_button:focus .juiz_sps_icon {
 	margin-right: .3em;
 }
 
-/* Specific: When the counters are activated via the options */
+/**
+ * Specific: When Compact Mode is ON
+ */
+.juiz_sps_links .juiz_sps_compact .juiz_sps_button {
+	/* Do something */
+}
+
+/**
+ * Specific: When Compact Mode and Hidden Name are ON
+ */
+.juiz_sps_links .juiz_sps_compact.juiz_sps_hide_name .juiz_sps_button {
+	/* Do something */
+}
+
+/**
+ * Specific: When the counters are activated via the options
+ */
 .juiz_sps_counter {
 }
 
@@ -488,8 +513,10 @@
 					<li class="nav-item-tutorials">
 						<span class="sub-item"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10L2.54 7.02L3 18H1L1.48 6.59L0 6L10 2L20 6L10 10ZM10 5C9.45 5 9 5.22 9 5.5C9 5.78 9.45 6 10 6C10.55 6 11 5.78 11 5.5C11 5.22 10.55 5 10 5ZM10 11L15.57 8.77C16.28 9.71 16.77 10.84 16.93 12.07C16.63 12.03 16.32 12 16 12C13.45 12 11.22 13.37 10 15.41C9.38075 14.3708 8.50224 13.5101 7.45048 12.9124C6.39872 12.3146 5.20976 12.0002 4 12C3.68 12 3.37 12.03 3.07 12.07C3.23 10.84 3.72 9.71 4.43 8.77L10 11Z" fill="currentColor"/></svg>Tutorials</span>
 						<ul>
-							<li class="here-2-create-buttons-skin"><a href="tutorial-create-buttons-skin.html">Create a Buttons Skin</a></li>
+							<li class="here-2-create-a-custom-button"><a href="tutorial-create-a-custom-button.html">Create a Custom Button</a></li>
+								<li class="here-2-create-buttons-skin"><a href="tutorial-create-buttons-skin.html">Create a Buttons Skin</a></li>
 								<li class="here-2-customize-buttons-appearance"><a href="tutorial-customize-buttons-appearance.html">Customize Buttons Appearance</a></li>
+								<li class="here-2-customize-css-style-sheet"><a href="tutorial-customize-css-style-sheet.html">Customize CSS StyleSheet</a></li>
 						</ul>
 					</li>
 					<li class="nav-item-filters">
